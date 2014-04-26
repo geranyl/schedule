@@ -7,43 +7,80 @@
     <meta name="viewport" content="width=device-width">
 
     <style>
-        body, html{
+        body, html {
             margin: 0;
             padding: 0;
             background: #fff;
             font-family: Arial, Helvetica, sans-serif;
         }
-        ul{
-            list-style: none;
-            padding:0;
 
+        ul {
+            list-style: none;
+            padding: 0;
 
         }
 
-        .padded li{
+        .padded li {
             padding: 20px;
         }
 
-        .padded li ul li{
+        .padded li ul li {
             padding: 0;
         }
 
-
-        ul li:nth-child(even){
+        ul li:nth-child(even) {
             background-color: #eaeaea;
         }
 
-        label{
+        label {
             font-weight: bold;
         }
+
+        .day-header{
+            padding: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            background-color: #78c4ff;
+            margin-top: 30px;
+        }
+        header{
+            display: block;
+            position: fixed;
+            background-color: #000;
+            width: 100%;
+            height: 50px;
+            margin: 0;
+            top: 0;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        header a:link, header a:visited, header a:hover, header a:active{
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px;
+            line-height: 50px;
+        }
+
+
+        #presentations{
+            margin-top: 60px;
+        }
+
     </style>
 
 </head>
 <body>
 
-<ul id="presentations" class="padded">
+<header>
 
-</ul>
+    <a href="#April262014">April 26</a> | <a href="#April272014">April 27</a> | <a href="#April282014">April 28</a> | <a href="#April292014">April 29</a>
+
+</header>
+<div id="presentations">
+
+</div>
 
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
@@ -51,35 +88,64 @@
     $.ajax({
         url: 'fitc.json',
         success: function (data) {
-           var str='';
+            var str = '';
 
 
             data.fitc.sort(function (a, b) {
-                var ay = a.title.toLowerCase();
-                var be = b.title.toLowerCase();
-                if (ay > be)
-                    return 1;
-                if (ay < be)
-                    return -1;
-                // a must be equal to b
-                return 0;
+
+                var dateA = new Date(a.date);
+                var dateB = new Date(b.date);
+                var timeA = new Date('04/04/1970' + ' ' + a.time.split('-')[1].replace(/\d(?=[aA-zZ])/g, '$& '));
+                var timeB = new Date('04/04/1970' + ' ' + b.time.split('-')[1].replace(/\d(?=[aA-zZ])/g, '$& '));
+
+                if (dateA - dateB === 0) {
+                    if (timeA - timeB === 0) {
+                        return 0;
+                    }
+                    return timeA - timeB;
+                } else {
+                    return dateA - dateB;
+                }
+
+
             });
 
-           for (var i= 0, length=data.fitc.length; i<length; i++){
-               var obj = data.fitc[i];
-               str+='<li>' +
-                       '<h2>'+obj.title+'</h2>' +
-                       '<label>Speaker: </label>'+obj.speaker+
-                       '<br/><label>Date: </label>'+obj.date+
-                       '<br/><label>Time: </label>'+obj.time+
-                       '<br/><label>Location: </label>'+obj.location+
-                       '<br/><label>Link:</label> <a href="'+obj.url+'" target="_blank">'+obj.url+'</a>'+
-                       '<br/><label>Tags: </label>'+obj.tags+
-                       '<br/><p><label>Desc: </label>'+obj.desc+'</p>'+
 
-                   '</li>'
+            var prevDate=-1, curDate=-1, isNewDate, flagged;
+            for (var i = 0, length = data.fitc.length; i < length; i++) {
+                var obj = data.fitc[i];
 
-           }
+                curDate = new Date(obj.date);
+                isNewDate = true;
+                flagged = true;
+
+                if(curDate-prevDate===0){
+                    isNewDate = false;
+                    flagged = false;
+                }else if(flagged){
+                    str += '</ul>';
+
+                }
+
+                if(isNewDate) {
+                    str+= '<div class="day-header"><a name="'+obj.date.replace(/\s+/g, '')+'">Day:</a> '+obj.date+'</div>';
+                    str += '<ul class="padded">';
+                    flagged = true;
+                }
+                str += '<li>' +
+                        '<h2>' + obj.title + '</h2>' +
+                        '<label>Speaker: </label>' + obj.speaker +
+                        '<br/><label>Date: </label>' + obj.date +
+                        '<br/><label>Time: </label>' + obj.time +
+                        '<br/><label>Location: </label>' + obj.location +
+                        '<br/><label>Link:</label> <a href="' + obj.url + '" target="_blank">' + obj.url + '</a>' +
+                        '<br/><label>Tags: </label>' + obj.tags +
+                        '<br/><p><label>Desc: </label>' + obj.desc + '</p>' +
+
+                        '</li>';
+
+                prevDate = curDate;
+            }
 
             $('#presentations').html(str);
         },
