@@ -15,9 +15,23 @@
         }
         ul{
             list-style: none;
-            padding-right: 20px;
+            padding:0;
+
+
         }
 
+        .padded li{
+            padding: 20px;
+        }
+
+        .padded li ul li{
+            padding: 0;
+        }
+
+
+        ul li:nth-child(even){
+            background-color: #eaeaea;
+        }
 
         label{
             font-weight: bold;
@@ -27,7 +41,7 @@
 </head>
 <body>
 
-<ul id="presentations">
+<ul id="presentations" class="padded">
 
 </ul>
 
@@ -60,8 +74,7 @@
                        '<br/><label>Time: </label>'+obj.time+
                        '<br/><label>Location: </label>'+obj.location+
                        '<br/><label>Link:</label> <a href="'+obj.url+'" target="_blank">'+obj.url+'</a>'+
-
-
+                       '<br/><label>Tags: </label>'+obj.tags+
                        '<br/><p><label>Desc: </label>'+obj.desc+'</p>'+
 
                    '</li>'
