@@ -18,6 +18,7 @@
             padding-right: 20px;
         }
 
+
         label{
             font-weight: bold;
         }
@@ -58,7 +59,11 @@
                        '<br/><label>Date: </label>'+obj.date+
                        '<br/><label>Time: </label>'+obj.time+
                        '<br/><label>Location: </label>'+obj.location+
-                       '<br/><p><label>Desc: </label>'+obj.desc+'</p>'
+                       '<br/><label>Link:</label> <a href="'+obj.url+'" target="_blank">'+obj.url+'</a>'+
+
+
+                       '<br/><p><label>Desc: </label>'+obj.desc+'</p>'+
+
                    '</li>'
 
            }
