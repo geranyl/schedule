@@ -1,4 +1,4 @@
 # schedule
 Schedule scrape - 2014
 
-Hated the FITC mobile version, scraped the site using perl.
+Found the FITC mobile version hard to use, scraped the site using perl and built a plainer one.
